@@ -55,6 +55,23 @@ export interface TimetableEntry {
   room: string;
 }
 
+export interface StudentInquiry {
+  id?: string;
+  fullName: string;
+  email: string;
+  phone: string;
+  dateOfBirth: string;
+  parentName: string;
+  parentPhone: string;
+  address: string;
+  previousSchool: string;
+  interestedCourses: string;
+  preferredBatch: string;
+  message: string;
+  submittedAt: Date;
+  status: 'pending' | 'contacted' | 'admitted' | 'rejected';
+}
+
 // Study Materials
 export const addStudyMaterial = async (material: Omit<StudyMaterial, 'id'>) => {
   const docRef = await addDoc(collection(db, 'studyMaterials'), {
@@ -141,4 +158,24 @@ export const getTimetable = async (): Promise<TimetableEntry[]> => {
 export const addTimetableEntry = async (entry: Omit<TimetableEntry, 'id'>) => {
   const docRef = await addDoc(collection(db, 'timetable'), entry);
   return docRef.id;
+};
+
+// Student Inquiries
+export const addInquiry = async (inquiry: Omit<StudentInquiry, 'id'>) => {
+  const docRef = await addDoc(collection(db, 'inquiries'), {
+    ...inquiry,
+    submittedAt: Timestamp.fromDate(inquiry.submittedAt)
+  });
+  return docRef.id;
+};
+
+export const getInquiries = async (): Promise<StudentInquiry[]> => {
+  const querySnapshot = await getDocs(
+    query(collection(db, 'inquiries'), orderBy('submittedAt', 'desc'))
+  );
+  return querySnapshot.docs.map(doc => ({
+    id: doc.id,
+    ...doc.data(),
+    submittedAt: doc.data().submittedAt.toDate()
+  })) as StudentInquiry[];
 };
