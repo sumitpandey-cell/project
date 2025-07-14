@@ -1,11 +1,17 @@
 import Link from 'next/link';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
+import AdminLoginButton from '@/components/AdminLoginButton';
 import { GraduationCap, Users, BookOpen, TrendingUp, Bell, Award } from 'lucide-react';
 
 export default function Home() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100">
+      {/* Admin Access Button - Top Right */}
+      <div className="absolute top-4 right-4 z-10">
+        <AdminLoginButton />
+      </div>
+      
       {/* Hero Section */}
       <section className="py-20 px-4 sm:px-6 lg:px-8">
         <div className="max-w-7xl mx-auto text-center">
