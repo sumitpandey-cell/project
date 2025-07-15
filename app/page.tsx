@@ -30,7 +30,7 @@ export default function Home() {
               <Link href="/login/student">Student Portal</Link>
             </Button>
             <Button asChild size="lg" variant="secondary" className="text-lg px-8 py-3">
-              <Link href="/inquiry">Join Now</Link>
+              <Link href="/join">Join Now</Link>
             </Button>
             <Button asChild variant="outline" size="lg" className="text-lg px-8 py-3">
               <Link href="/login/faculty">Faculty Portal</Link>
@@ -127,7 +127,7 @@ export default function Home() {
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <Button asChild size="lg" variant="secondary" className="text-lg px-8 py-3">
-              <Link href="/inquiry">Join Now - Apply Today</Link>
+              <Link href="/join">Join Now - Apply Today</Link>
             </Button>
             <Button asChild size="lg" variant="outline" className="text-lg px-8 py-3 text-white border-white hover:bg-white hover:text-blue-600">
               <Link href="/signup/faculty">Join as Faculty</Link>

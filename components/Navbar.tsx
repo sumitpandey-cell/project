@@ -42,6 +42,9 @@ const Navbar = () => {
                   <Button variant="ghost" className="flex items-center space-x-2">
                     <User className="h-4 w-4" />
                     <span>{userProfile.name}</span>
+                    {userProfile.studentId && (
+                      <span className="text-xs text-gray-500">({userProfile.studentId})</span>
+                    )}
                   </Button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end">
@@ -63,6 +66,9 @@ const Navbar = () => {
                 </Button>
                 <Button variant="ghost" asChild>
                   <Link href="/login/faculty">Faculty Login</Link>
+                </Button>
+                <Button variant="outline" asChild>
+                  <Link href="/join">Join Now</Link>
                 </Button>
               </div>
             )}

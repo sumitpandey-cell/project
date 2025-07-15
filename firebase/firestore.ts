@@ -72,6 +72,31 @@ export interface StudentInquiry {
   status: 'pending' | 'contacted' | 'admitted' | 'rejected';
 }
 
+export interface StudentEnquiry {
+  id?: string;
+  fullName: string;
+  email: string;
+  phone: string;
+  course: string;
+  notes: string;
+  submittedAt: Date;
+  status: 'pending' | 'id_generated' | 'contacted' | 'rejected';
+  studentId?: string;
+}
+
+export interface StudentAccount {
+  studentId: string;
+  email: string;
+  fullName: string;
+  phone: string;
+  course: string;
+  password: string;
+  role: 'student';
+  createdAt: Date;
+  enquiryId: string;
+  isActive: boolean;
+}
+
 // Study Materials
 export const addStudyMaterial = async (material: Omit<StudyMaterial, 'id'>) => {
   const docRef = await addDoc(collection(db, 'studyMaterials'), {
@@ -178,4 +203,61 @@ export const getInquiries = async (): Promise<StudentInquiry[]> => {
     ...doc.data(),
     submittedAt: doc.data().submittedAt.toDate()
   })) as StudentInquiry[];
+};
+
+// Student Enquiries (New Join Form)
+export const addStudentEnquiry = async (enquiry: Omit<StudentEnquiry, 'id'>) => {
+  const docRef = await addDoc(collection(db, 'studentEnquiries'), {
+    ...enquiry,
+    submittedAt: Timestamp.fromDate(enquiry.submittedAt)
+  });
+  return docRef.id;
+};
+
+export const getStudentEnquiries = async (): Promise<StudentEnquiry[]> => {
+  const querySnapshot = await getDocs(
+    query(collection(db, 'studentEnquiries'), orderBy('submittedAt', 'desc'))
+  );
+  return querySnapshot.docs.map(doc => ({
+    id: doc.id,
+    ...doc.data(),
+    submittedAt: doc.data().submittedAt.toDate()
+  })) as StudentEnquiry[];
+};
+
+export const updateEnquiryStatus = async (
+  enquiryId: string, 
+  status: StudentEnquiry['status'], 
+  studentId?: string
+) => {
+  const docRef = doc(db, 'studentEnquiries', enquiryId);
+  const updateData: any = { status };
+  if (studentId) {
+    updateData.studentId = studentId;
+  }
+  await updateDoc(docRef, updateData);
+};
+
+export const generateStudentAccount = async (accountData: Omit<StudentAccount, 'createdAt' | 'isActive'>) => {
+  const docRef = doc(db, 'users', accountData.studentId);
+  await setDoc(docRef, {
+    ...accountData,
+    createdAt: Timestamp.fromDate(new Date()),
+    isActive: true
+  });
+  return accountData.studentId;
+};
+
+export const getStudentByStudentId = async (studentId: string): Promise<StudentAccount | null> => {
+  const docRef = doc(db, 'users', studentId);
+  const docSnap = await getDoc(docRef);
+  
+  if (docSnap.exists()) {
+    const data = docSnap.data();
+    return {
+      ...data,
+      createdAt: data.createdAt.toDate()
+    } as StudentAccount;
+  }
+  return null;
 };
