@@ -9,7 +9,8 @@ import {
   query, 
   where, 
   orderBy, 
-  Timestamp 
+  Timestamp,
+  setDoc
 } from 'firebase/firestore';
 import { db } from './config';
 
@@ -239,7 +240,7 @@ export const updateEnquiryStatus = async (
 };
 
 export const generateStudentAccount = async (accountData: Omit<StudentAccount, 'createdAt' | 'isActive'>) => {
-  const docRef = doc(db, 'users', accountData.studentId);
+  const docRef = doc(db, 'studentAccounts', accountData.studentId);
   await setDoc(docRef, {
     ...accountData,
     createdAt: Timestamp.fromDate(new Date()),
@@ -249,7 +250,7 @@ export const generateStudentAccount = async (accountData: Omit<StudentAccount, '
 };
 
 export const getStudentByStudentId = async (studentId: string): Promise<StudentAccount | null> => {
-  const docRef = doc(db, 'users', studentId);
+  const docRef = doc(db, 'studentAccounts', studentId);
   const docSnap = await getDoc(docRef);
   
   if (docSnap.exists()) {

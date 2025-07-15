@@ -35,7 +35,6 @@ const navigation = [
     children: [
       { name: 'Students', href: '/admin/students', icon: Users },
       { name: 'Faculty', href: '/admin/faculty', icon: UserCheck },
-      { name: 'Old Inquiries', href: '/admin/inquiries', icon: FileText },
       { name: 'Student Enquiries', href: '/admin/enquiries', icon: FileText },
     ]
   },

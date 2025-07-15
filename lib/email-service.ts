@@ -8,34 +8,59 @@ interface StudentIdEmailData {
 }
 
 export const sendStudentIdEmail = async (data: StudentIdEmailData): Promise<void> => {
-  // For demo purposes, we'll simulate email sending
-  // In production, integrate with EmailJS, SendGrid, or Firebase Functions
-  
-  console.log('Sending Student ID email:', {
-    to: data.studentEmail,
-    subject: 'Your Doppler Coaching Student ID',
-    content: `
-      Dear ${data.studentName},
-      
-      Welcome to Doppler Coaching Center!
-      
-      Your Student ID has been generated successfully:
-      
-      Student ID: ${data.studentId}
-      Password: ${data.password}
-      
-      You can now login to your student portal at:
-      ${window.location.origin}/login/student-id
-      
-      Please keep your Student ID and password secure.
-      
-      Best regards,
-      Doppler Coaching Team
-    `
-  });
-  
-  // Simulate API call delay
-  await new Promise(resolve => setTimeout(resolve, 1000));
+  try {
+    // For demo purposes, we'll simulate email sending
+    // In production, integrate with EmailJS, SendGrid, or Firebase Functions
+    
+    console.log('Sending Student ID email:', {
+      to: data.studentEmail,
+      subject: 'Your Doppler Coaching Student ID',
+      content: `
+        Dear ${data.studentName},
+        
+        Welcome to Doppler Coaching Center!
+        
+        Your Student ID has been generated successfully:
+        
+        Student ID: ${data.studentId}
+        Password: ${data.password}
+        
+        You can now login to your student portal at:
+        ${typeof window !== 'undefined' ? window.location.origin : 'https://dopplercoaching.com'}/login/student-id
+        
+        Please keep your Student ID and password secure.
+        
+        Best regards,
+        Doppler Coaching Team
+      `
+    });
+    
+    // Simulate API call delay
+    await new Promise(resolve => setTimeout(resolve, 1000));
+    
+    // Log successful email delivery
+    await logEmailDelivery({
+      recipientEmail: data.studentEmail,
+      subject: 'Your Doppler Coaching Student ID',
+      status: 'sent',
+      timestamp: new Date(),
+      studentId: data.studentId
+    });
+    
+  } catch (error) {
+    console.error('Failed to send email:', error);
+    
+    // Log failed email delivery
+    await logEmailDelivery({
+      recipientEmail: data.studentEmail,
+      subject: 'Your Doppler Coaching Student ID',
+      status: 'failed',
+      timestamp: new Date(),
+      studentId: data.studentId
+    });
+    
+    throw new Error('Failed to send email notification');
+  }
   
   // In production, implement actual email sending:
   /*

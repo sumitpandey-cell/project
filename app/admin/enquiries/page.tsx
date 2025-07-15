@@ -60,7 +60,7 @@ export default function AdminEnquiries() {
   const generateStudentId = () => {
     const year = new Date().getFullYear().toString().slice(-2);
     const randomNum = Math.floor(Math.random() * 9000) + 1000;
-    return `DPLR${year}${randomNum}`;
+    return `DPLR${year}${randomNum.toString().padStart(4, '0')}`;
   };
 
   const handleGenerateStudentId = async (enquiry: StudentEnquiry) => {
@@ -70,7 +70,7 @@ export default function AdminEnquiries() {
 
     try {
       const studentId = generateStudentId();
-      const defaultPassword = 'student123'; // In production, generate a secure password
+      const defaultPassword = `${enquiry.fullName.split(' ')[0].toLowerCase()}123`; // More personalized password
 
       // Create student account
       await generateStudentAccount({
@@ -81,6 +81,7 @@ export default function AdminEnquiries() {
         course: enquiry.course,
         password: defaultPassword,
         enquiryId: enquiry.id,
+        role: 'student'
       });
 
       // Update enquiry status
@@ -94,9 +95,12 @@ export default function AdminEnquiries() {
           studentId,
           password: defaultPassword,
         });
+        
+        console.log('Email sent successfully to:', enquiry.email);
       } catch (emailError) {
         console.error('Error sending email:', emailError);
-        // Continue even if email fails
+        // Continue even if email fails, but show warning
+        alert('Student ID generated successfully, but email notification failed. Please inform the student manually.');
       }
 
       // Update local state
@@ -113,7 +117,16 @@ export default function AdminEnquiries() {
       setShowSuccessDialog(true);
     } catch (error) {
       console.error('Error generating student ID:', error);
-      alert('Failed to generate Student ID. Please try again.');
+      
+      // More detailed error handling
+      let errorMessage = 'Failed to generate Student ID. ';
+      if (error instanceof Error) {
+        errorMessage += error.message;
+      } else {
+        errorMessage += 'Please try again.';
+      }
+      
+      alert(errorMessage);
     } finally {
       setGeneratingId(null);
     }
